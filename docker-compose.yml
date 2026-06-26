@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: solo-pg
+    environment:
+      POSTGRES_DB: solo_leveling
+      POSTGRES_USER: solo_user
+      POSTGRES_PASSWORD: solo_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    container_name: solo-backend
+    ports:
+      - "3001:3001"
+    environment:
+      DATABASE_URL: postgres://solo_user:solo_pass@postgres:5432/solo_leveling
+    depends_on:
+      - postgres
+
+volumes:
+  pgdata:
