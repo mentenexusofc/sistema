@@ -1,6 +1,21 @@
 version: "3.8"
 
 services:
+  backend:
+    build: ./backend
+    container_name: solo-backend
+    ports:
+      - "3001:3001"
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgres://solo_user:solo_pass@postgres:5432/solo_leveling}
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-solo-leveling}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_SRANK_PRICE_ID: ${STRIPE_SRANK_PRICE_ID}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+      BASE_URL: ${BASE_URL}
+    depends_on:
+      - postgres
+
   postgres:
     image: postgres:16-alpine
     container_name: solo-pg
@@ -13,15 +28,13 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
-  backend:
-    build: ./backend
-    container_name: solo-backend
+  web:
+    build: ./web
+    container_name: solo-web
     ports:
-      - "3001:3001"
-    environment:
-      DATABASE_URL: postgres://solo_user:solo_pass@postgres:5432/solo_leveling
+      - "80:80"
     depends_on:
-      - postgres
+      - backend
 
 volumes:
   pgdata:
