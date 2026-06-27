@@ -2,7 +2,7 @@ import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import Stripe from "stripe";
 import db from "../db/connection";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {});
+const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY, {}) : null;
 
 const BASE_URL = process.env.BASE_URL || "http://localhost:3001";
 
@@ -11,6 +11,9 @@ export default async function (app: FastifyInstance) {
     "/itens/checkout",
     { preHandler: [app.authenticate] },
     async (request, reply) => {
+      if (!stripe) {
+        return reply.status(500).send({ error: "Stripe não configurado no servidor." });
+      }
       const userId = (request.user as any).id;
       const { item_id } = request.body;
 
@@ -65,6 +68,9 @@ export default async function (app: FastifyInstance) {
     "/assinatura/checkout",
     { preHandler: [app.authenticate] },
     async (request, reply) => {
+      if (!stripe) {
+        return reply.status(500).send({ error: "Stripe não configurado no servidor." });
+      }
       const userId = (request.user as any).id;
 
       const srankPriceId = process.env.STRIPE_SRANK_PRICE_ID;
@@ -107,6 +113,9 @@ export default async function (app: FastifyInstance) {
   app.post(
     "/stripe/webhook",
     async (request, reply) => {
+      if (!stripe) {
+        return reply.status(500).send({ error: "Stripe não configurado no servidor." });
+      }
       const sig = request.headers["stripe-signature"] as string;
       const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
       const rawBody = (request as any).rawBody;
