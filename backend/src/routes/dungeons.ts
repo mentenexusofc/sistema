@@ -13,7 +13,7 @@ export default async function (app: FastifyInstance) {
   app.post<{ Body: IniciarBody }>(
     "/dungeons/iniciar",
     { preHandler: [app.authenticate] },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       const userId = (request.user as any).id;
 
       const user = await db("Users").where({ id: userId }).first();
@@ -45,7 +45,7 @@ export default async function (app: FastifyInstance) {
   app.post<{ Body: FinalizarBody }>(
     "/dungeons/finalizar",
     { preHandler: [app.authenticate] },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       const userId = (request.user as any).id;
       const { session_id } = request.body;
 
@@ -114,7 +114,7 @@ export default async function (app: FastifyInstance) {
   app.get(
     "/dungeons/sessoes",
     { preHandler: [app.authenticate] },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       const userId = (request.user as any).id;
 
       const sessoes = await db("DungeonSessions")

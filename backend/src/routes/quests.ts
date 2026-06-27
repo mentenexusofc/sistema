@@ -22,7 +22,7 @@ export default async function (app: FastifyInstance) {
   app.get(
     "/quests",
     { preHandler: [app.authenticate] },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       const userId = (request.user as any).id;
 
       const quests = await db("Quests")
@@ -37,7 +37,7 @@ export default async function (app: FastifyInstance) {
   app.post<{ Body: CreateQuestBody }>(
     "/quests",
     { preHandler: [app.authenticate] },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       const userId = (request.user as any).id;
       const { tipo, descricao, xp_recompensa } = request.body;
 
@@ -74,7 +74,7 @@ export default async function (app: FastifyInstance) {
   app.patch<{ Params: QuestParams }>(
     "/quests/:id",
     { preHandler: [app.authenticate] },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       const userId = (request.user as any).id;
       const { id } = request.params;
 
@@ -197,7 +197,7 @@ export default async function (app: FastifyInstance) {
   app.delete<{ Params: QuestParams }>(
     "/quests/:id",
     { preHandler: [app.authenticate] },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       const userId = (request.user as any).id;
       const { id } = request.params;
 
@@ -216,7 +216,7 @@ export default async function (app: FastifyInstance) {
   app.get(
     "/quests/templates",
     { preHandler: [app.authenticate] },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       const userId = (request.user as any).id;
 
       const templates = await db("QuestTemplates")
@@ -230,7 +230,7 @@ export default async function (app: FastifyInstance) {
   app.post<{ Body: CreateTemplateBody }>(
     "/quests/templates",
     { preHandler: [app.authenticate] },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       const userId = (request.user as any).id;
       const { tipo, descricao, xp_recompensa, frequencia } = request.body;
 
@@ -261,7 +261,7 @@ export default async function (app: FastifyInstance) {
   app.delete<{ Params: QuestParams }>(
     "/quests/templates/:id",
     { preHandler: [app.authenticate] },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       const userId = (request.user as any).id;
       const { id } = request.params;
 

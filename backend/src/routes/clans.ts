@@ -10,7 +10,7 @@ export default async function (app: FastifyInstance) {
   app.post<{ Body: CreateClanBody }>(
     "/clans",
     { preHandler: [app.authenticate] },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       const userId = (request.user as any).id;
 
       const user = await db("Users").where({ id: userId }).first();
@@ -54,7 +54,7 @@ export default async function (app: FastifyInstance) {
   app.post<{ Params: { id: string } }>(
     "/clans/:id/entrar",
     { preHandler: [app.authenticate] },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       const userId = (request.user as any).id;
       const { id } = request.params;
 
@@ -89,7 +89,7 @@ export default async function (app: FastifyInstance) {
   app.get<{ Params: { id: string } }>(
     "/clans/:id",
     { preHandler: [app.authenticate] },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       const { id } = request.params;
 
       const clan = await db("Clans").where({ id }).first();
@@ -118,7 +118,7 @@ export default async function (app: FastifyInstance) {
   app.get(
     "/clans",
     { preHandler: [app.authenticate] },
-    async (_request: FastifyRequest, reply: FastifyReply) => {
+    async (_request, reply) => {
       const clans = await db("Clans")
         .leftJoin("ClanMembers", "Clans.id", "ClanMembers.clan_id")
         .select(

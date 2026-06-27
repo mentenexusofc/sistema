@@ -13,7 +13,7 @@ export default async function (app: FastifyInstance) {
   app.post<{ Body: ColetarBody }>(
     "/shadow/coletar",
     { preHandler: [app.authenticate] },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       const userId = (request.user as any).id;
 
       const user = await db("Users").where({ id: userId }).first();
@@ -44,7 +44,7 @@ export default async function (app: FastifyInstance) {
   app.get(
     "/shadow/exercito",
     { preHandler: [app.authenticate] },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       const userId = (request.user as any).id;
 
       const sombras = await db("ShadowArmy").where({ user_id: userId }).orderBy("desbloqueado_em", "desc");
@@ -60,7 +60,7 @@ export default async function (app: FastifyInstance) {
   app.post<{ Body: EvoluirBody }>(
     "/shadow/evoluir",
     { preHandler: [app.authenticate] },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       const userId = (request.user as any).id;
 
       const user = await db("Users").where({ id: userId }).first();

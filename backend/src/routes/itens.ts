@@ -9,7 +9,7 @@ export default async function (app: FastifyInstance) {
   app.get(
     "/itens",
     { preHandler: [app.authenticate] },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       const userId = (request.user as any).id;
 
       const itens = await db("Itens")
@@ -23,7 +23,7 @@ export default async function (app: FastifyInstance) {
   app.get(
     "/itens/catalogo",
     { preHandler: [app.authenticate] },
-    async (_request: FastifyRequest, reply: FastifyReply) => {
+    async (_request, reply) => {
       const catalogo = await db("CatalogoItens").orderBy("preco_xp", "asc");
 
       return { catalogo };
@@ -33,7 +33,7 @@ export default async function (app: FastifyInstance) {
   app.post<{ Body: ComprarBody }>(
     "/itens/comprar",
     { preHandler: [app.authenticate] },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       const userId = (request.user as any).id;
       const { item_id } = request.body;
 

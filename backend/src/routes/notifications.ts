@@ -9,7 +9,7 @@ export default async function (app: FastifyInstance) {
   app.post<{ Body: PushTokenBody }>(
     "/notifications/push-token",
     { preHandler: [app.authenticate] },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       const userId = (request.user as any).id;
       const { push_token } = request.body;
 

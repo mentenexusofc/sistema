@@ -51,7 +51,7 @@ export default async function (app: FastifyInstance) {
   app.get(
     "/users/evolucao",
     { preHandler: [app.authenticate] },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       const userId = (request.user as any).id;
 
       const user = await db("Users").where({ id: userId }).first();
@@ -135,7 +135,7 @@ export default async function (app: FastifyInstance) {
   app.patch<{ Body: MetaXpBody }>(
     "/users/meta-xp",
     { preHandler: [app.authenticate] },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       const userId = (request.user as any).id;
       const { meta_xp_diaria } = request.body;
 

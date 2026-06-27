@@ -12,7 +12,7 @@ export default async function (app: FastifyInstance) {
   app.post<{ Body: DistribuirBody }>(
     "/atributos/distribuir",
     { preHandler: [app.authenticate] },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       const userId = (request.user as any).id;
       const { str = 0, agi = 0, int = 0, vit = 0 } = request.body;
 

@@ -10,7 +10,7 @@ export default async function (app: FastifyInstance) {
   app.post<{ Body: { item_id: string } }>(
     "/itens/checkout",
     { preHandler: [app.authenticate] },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       const userId = (request.user as any).id;
       const { item_id } = request.body;
 
@@ -64,7 +64,7 @@ export default async function (app: FastifyInstance) {
   app.post(
     "/assinatura/checkout",
     { preHandler: [app.authenticate] },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       const userId = (request.user as any).id;
 
       const srankPriceId = process.env.STRIPE_SRANK_PRICE_ID;
@@ -106,7 +106,7 @@ export default async function (app: FastifyInstance) {
 
   app.post(
     "/stripe/webhook",
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       const sig = request.headers["stripe-signature"] as string;
       const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
       const rawBody = (request as any).rawBody;
