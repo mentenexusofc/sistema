@@ -13,6 +13,32 @@ interface MetaXpBody {
 }
 
 export default async function (app: FastifyInstance) {
+  app.post("/seed", async (request, reply) => {
+    const existing = await db("Users").where({ email: "mentenexus.ia@gmail.com" }).first();
+    if (existing) {
+      return reply.status(200).send({ message: "Admin já existe" });
+    }
+
+    const senha_hash = await bcrypt.hash("admin", 10);
+    const result = await db.transaction(async (trx) => {
+      const [user] = await trx("Users")
+        .insert({
+          nome: "Admin",
+          email: "mentenexus.ia@gmail.com",
+          senha_hash,
+          rank: "S-Rank",
+          assinatura: "s-rank",
+        })
+        .returning(["id", "nome", "email", "rank", "assinatura", "criado_em"]);
+
+      await trx("User_Attributes").insert({ user_id: user.id, str: 10, agi: 10, int: 10, vit: 10 });
+
+      return user;
+    });
+
+    return reply.status(201).send({ message: "Admin criado", user: result });
+  });
+
   app.post<{ Body: CreateUserBody }>("/users", async (request, reply) => {
     const { nome, email, senha } = request.body;
 

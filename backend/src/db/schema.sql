@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS Users (
+CREATE TABLE IF NOT EXISTS "Users" (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     nome VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -14,8 +14,8 @@ CREATE TABLE IF NOT EXISTS Users (
     criado_em TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS User_Attributes (
-    user_id UUID PRIMARY KEY REFERENCES Users(id) ON DELETE CASCADE,
+CREATE TABLE IF NOT EXISTS "User_Attributes" (
+    user_id UUID PRIMARY KEY REFERENCES "Users"(id) ON DELETE CASCADE,
     str INTEGER NOT NULL DEFAULT 5,
     agi INTEGER NOT NULL DEFAULT 5,
     int INTEGER NOT NULL DEFAULT 5,
@@ -25,9 +25,9 @@ CREATE TABLE IF NOT EXISTS User_Attributes (
     pontos_atributo INTEGER NOT NULL DEFAULT 0
 );
 
-CREATE TABLE IF NOT EXISTS Quests (
+CREATE TABLE IF NOT EXISTS "Quests" (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES Users(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES "Users"(id) ON DELETE CASCADE,
     tipo VARCHAR(50) NOT NULL,
     descricao TEXT NOT NULL,
     xp_recompensa INTEGER NOT NULL DEFAULT 0,
@@ -35,10 +35,10 @@ CREATE TABLE IF NOT EXISTS Quests (
     data DATE NOT NULL DEFAULT CURRENT_DATE
 );
 
-CREATE INDEX IF NOT EXISTS idx_quests_user_id ON Quests(user_id);
-CREATE INDEX IF NOT EXISTS idx_quests_data ON Quests(data);
+CREATE INDEX IF NOT EXISTS idx_quests_user_id ON "Quests"(user_id);
+CREATE INDEX IF NOT EXISTS idx_quests_data ON "Quests"(data);
 
-CREATE TABLE IF NOT EXISTS CatalogoItens (
+CREATE TABLE IF NOT EXISTS "CatalogoItens" (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     nome VARCHAR(255) NOT NULL,
     tipo VARCHAR(50) NOT NULL,
@@ -47,9 +47,9 @@ CREATE TABLE IF NOT EXISTS CatalogoItens (
     preco_real INTEGER
 );
 
-CREATE TABLE IF NOT EXISTS Itens (
+CREATE TABLE IF NOT EXISTS "Itens" (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES Users(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES "Users"(id) ON DELETE CASCADE,
     nome VARCHAR(255) NOT NULL,
     tipo VARCHAR(50) NOT NULL,
     descricao TEXT NOT NULL,
@@ -58,59 +58,59 @@ CREATE TABLE IF NOT EXISTS Itens (
     adquirido_em TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_itens_user_id ON Itens(user_id);
+CREATE INDEX IF NOT EXISTS idx_itens_user_id ON "Itens"(user_id);
 
-CREATE TABLE IF NOT EXISTS DungeonSessions (
+CREATE TABLE IF NOT EXISTS "DungeonSessions" (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES Users(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES "Users"(id) ON DELETE CASCADE,
     duracao_minutos INTEGER NOT NULL DEFAULT 25,
     xp_ganho INTEGER NOT NULL DEFAULT 0,
     concluida BOOLEAN NOT NULL DEFAULT FALSE,
     criada_em TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_dungeon_sessions_user_id ON DungeonSessions(user_id);
+CREATE INDEX IF NOT EXISTS idx_dungeon_sessions_user_id ON "DungeonSessions"(user_id);
 
-CREATE TABLE IF NOT EXISTS Clans (
+CREATE TABLE IF NOT EXISTS "Clans" (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     nome VARCHAR(100) NOT NULL UNIQUE,
     descricao TEXT NOT NULL DEFAULT '',
-    dono_id UUID NOT NULL REFERENCES Users(id) ON DELETE CASCADE,
+    dono_id UUID NOT NULL REFERENCES "Users"(id) ON DELETE CASCADE,
     rank_medio VARCHAR(20) NOT NULL DEFAULT 'E-Rank',
     criado_em TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS ClanMembers (
+CREATE TABLE IF NOT EXISTS "ClanMembers" (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    clan_id UUID NOT NULL REFERENCES Clans(id) ON DELETE CASCADE,
-    user_id UUID NOT NULL REFERENCES Users(id) ON DELETE CASCADE,
+    clan_id UUID NOT NULL REFERENCES "Clans"(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES "Users"(id) ON DELETE CASCADE,
     cargo VARCHAR(20) NOT NULL DEFAULT 'membro' CHECK (cargo IN ('lider', 'oficial', 'membro')),
     joined_em TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     UNIQUE(clan_id, user_id)
 );
 
-CREATE INDEX IF NOT EXISTS idx_clanmembers_clan_id ON ClanMembers(clan_id);
-CREATE INDEX IF NOT EXISTS idx_clanmembers_user_id ON ClanMembers(user_id);
+CREATE INDEX IF NOT EXISTS idx_clanmembers_clan_id ON "ClanMembers"(clan_id);
+CREATE INDEX IF NOT EXISTS idx_clanmembers_user_id ON "ClanMembers"(user_id);
 
-CREATE TABLE IF NOT EXISTS ShadowArmy (
+CREATE TABLE IF NOT EXISTS "ShadowArmy" (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES Users(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES "Users"(id) ON DELETE CASCADE,
     nome VARCHAR(100) NOT NULL,
     poder INTEGER NOT NULL DEFAULT 10,
     nivel INTEGER NOT NULL DEFAULT 1,
     desbloqueado_em TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_shadowarmy_user_id ON ShadowArmy(user_id);
+CREATE INDEX IF NOT EXISTS idx_shadowarmy_user_id ON "ShadowArmy"(user_id);
 
-CREATE TABLE IF NOT EXISTS ShadowSouls (
+CREATE TABLE IF NOT EXISTS "ShadowSouls" (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES Users(id) ON DELETE CASCADE UNIQUE,
+    user_id UUID NOT NULL REFERENCES "Users"(id) ON DELETE CASCADE UNIQUE,
     quantidade INTEGER NOT NULL DEFAULT 0,
     updated_em TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS Achievements (
+CREATE TABLE IF NOT EXISTS "Achievements" (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     nome VARCHAR(255) NOT NULL UNIQUE,
     descricao TEXT NOT NULL,
@@ -120,19 +120,19 @@ CREATE TABLE IF NOT EXISTS Achievements (
     xp_recompensa INTEGER NOT NULL DEFAULT 0
 );
 
-CREATE TABLE IF NOT EXISTS UserAchievements (
+CREATE TABLE IF NOT EXISTS "UserAchievements" (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES Users(id) ON DELETE CASCADE,
-    achievement_id UUID NOT NULL REFERENCES Achievements(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES "Users"(id) ON DELETE CASCADE,
+    achievement_id UUID NOT NULL REFERENCES "Achievements"(id) ON DELETE CASCADE,
     desbloqueado_em TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     UNIQUE(user_id, achievement_id)
 );
 
-CREATE INDEX IF NOT EXISTS idx_userachievements_user_id ON UserAchievements(user_id);
+CREATE INDEX IF NOT EXISTS idx_userachievements_user_id ON "UserAchievements"(user_id);
 
-CREATE TABLE IF NOT EXISTS QuestHistory (
+CREATE TABLE IF NOT EXISTS "QuestHistory" (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES Users(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES "Users"(id) ON DELETE CASCADE,
     tipo VARCHAR(50) NOT NULL,
     descricao TEXT NOT NULL,
     xp_recompensa INTEGER NOT NULL DEFAULT 0,
@@ -141,12 +141,12 @@ CREATE TABLE IF NOT EXISTS QuestHistory (
     arquivado_em TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_questhistory_user_id ON QuestHistory(user_id);
-CREATE INDEX IF NOT EXISTS idx_questhistory_data ON QuestHistory(data);
+CREATE INDEX IF NOT EXISTS idx_questhistory_user_id ON "QuestHistory"(user_id);
+CREATE INDEX IF NOT EXISTS idx_questhistory_data ON "QuestHistory"(data);
 
-CREATE TABLE IF NOT EXISTS QuestTemplates (
+CREATE TABLE IF NOT EXISTS "QuestTemplates" (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES Users(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES "Users"(id) ON DELETE CASCADE,
     tipo VARCHAR(50) NOT NULL,
     descricao TEXT NOT NULL,
     xp_recompensa INTEGER NOT NULL DEFAULT 0,
@@ -154,9 +154,9 @@ CREATE TABLE IF NOT EXISTS QuestTemplates (
     criado_em TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_questtemplates_user_id ON QuestTemplates(user_id);
+CREATE INDEX IF NOT EXISTS idx_questtemplates_user_id ON "QuestTemplates"(user_id);
 
-INSERT INTO Achievements (nome, descricao, icone, requisito_tipo, requisito_valor, xp_recompensa) VALUES
+INSERT INTO "Achievements" (nome, descricao, icone, requisito_tipo, requisito_valor, xp_recompensa) VALUES
   ('Primeiro Passo', 'Complete sua primeira missão', 'quest', 'quests_completed', 1, 100),
   ('Produtivo', 'Complete 10 missões', 'quest', 'quests_completed', 10, 500),
   ('Mestre das Missões', 'Complete 50 missões', 'quest', 'quests_completed', 50, 2000),
@@ -173,7 +173,7 @@ INSERT INTO Achievements (nome, descricao, icone, requisito_tipo, requisito_valo
   ('Milionário de XP', 'Acumule 1.000.000 de XP total', 'xp', 'xp_total', 1000000, 10000)
 ON CONFLICT DO NOTHING;
 
-INSERT INTO CatalogoItens (nome, tipo, descricao, preco_xp, preco_real) VALUES
+INSERT INTO "CatalogoItens" (nome, tipo, descricao, preco_xp, preco_real) VALUES
   ('Poção de Cura Menor', 'pocao', 'Recupera 50 HP instantaneamente.', 200, NULL),
   ('Poção de Mana', 'pocao', 'Recupera 30 MP.', 300, NULL),
   ('Elixir de Força', 'pocao', 'Aumenta STR em 2 por 1 hora.', 500, NULL),
@@ -184,5 +184,5 @@ INSERT INTO CatalogoItens (nome, tipo, descricao, preco_xp, preco_real) VALUES
   ('Voucher Crédito R$25', 'recompensa', 'Resgate por R$25 em crédito real.', 10000, 2500)
 ON CONFLICT DO NOTHING;
 
-ALTER TABLE Users ADD COLUMN IF NOT EXISTS meta_xp_diaria INTEGER NOT NULL DEFAULT 1000;
-ALTER TABLE Users ADD COLUMN IF NOT EXISTS ultimo_bonus_meta_data DATE;
+ALTER TABLE "Users" ADD COLUMN IF NOT EXISTS meta_xp_diaria INTEGER NOT NULL DEFAULT 1000;
+ALTER TABLE "Users" ADD COLUMN IF NOT EXISTS ultimo_bonus_meta_data DATE;
