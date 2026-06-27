@@ -31,8 +31,8 @@ services:
   web:
     build: ./web
     container_name: solo-web
-    ports:
-      - "8080:80"
+    expose:
+      - 80
     depends_on:
       - backend
 
